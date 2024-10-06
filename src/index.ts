@@ -1,8 +1,10 @@
 import { Elysia, t } from 'elysia';
+import { swagger } from '@elysiajs/swagger';
 import AuthService from './services/auth.service';
 import { AuthLoginBody, AuthRegisterBody } from './types/auth';
 
 const app = new Elysia()
+  .use(swagger())
   .get('/', () => 'Hello Elysia')
   .group('/auth', (app) =>
     app
@@ -14,6 +16,10 @@ const app = new Elysia()
         },
         {
           body: t.Object({ email: t.String(), password: t.String() }),
+          detail: {
+            summary: 'Sign in the user',
+            tags: ['authentication'],
+          },
         }
       )
       .post(
@@ -28,6 +34,10 @@ const app = new Elysia()
             password: t.String(),
             retypePassword: t.String(),
           }),
+          detail: {
+            summary: 'Registers a user',
+            tags: ['authentication'],
+          },
         }
       )
   )
