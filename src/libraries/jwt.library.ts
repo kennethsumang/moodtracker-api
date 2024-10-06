@@ -1,7 +1,5 @@
 import { SignJWT, jwtVerify, decodeJwt, importJWK } from 'jose';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import config from '../config/jwt.config';
 
 /**
  * JWT Utility class to create, verify, and decode JSON Web Tokens (JWTs).
@@ -13,7 +11,7 @@ export default class JwtLibrary {
    * @returns A promise that resolves to the signed JWT token as a string.
    */
   static async createNewToken(payload: object): Promise<string> {
-    const secretKey = process.env.JWT_SECRET || '';
+    const secretKey = config.jwtSecret;
     const secret = await importJWK({ kty: 'oct', k: secretKey });
     const jwt = await new SignJWT({ ...payload })
       .setProtectedHeader({ alg: 'HS256' })
@@ -30,7 +28,7 @@ export default class JwtLibrary {
    */
   static async verifyToken(token: string): Promise<object> {
     try {
-      const secretKey = process.env.JWT_SECRET || '';
+      const secretKey = config.jwtSecret;
       const secret = await importJWK({ kty: 'oct', k: secretKey });
       const { payload } = await jwtVerify(token, secret);
       return payload;
