@@ -1,7 +1,6 @@
 import { Elysia, t } from 'elysia';
 import AuthService from './services/auth.service';
 import { AuthLoginBody, AuthRegisterBody } from './types/auth';
-import JwtLibrary from './libraries/jwt.library';
 
 const app = new Elysia()
   .get('/', () => 'Hello Elysia')
