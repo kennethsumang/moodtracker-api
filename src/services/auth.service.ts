@@ -1,7 +1,7 @@
 import DatabaseError from '../exceptions/database.error';
 import ValidationError from '../exceptions/validation.error';
 import HashLibrary from '../libraries/hash.library';
-import JwtLibrary from '../libraries/jwt.library';
+import SettingsRepository from '../repositories/settings.repository';
 import UserRepository from '../repositories/user.repository';
 import { AuthRegisterBody } from '../types/auth';
 import * as _ from 'lodash';
@@ -11,9 +11,11 @@ import * as _ from 'lodash';
  */
 export default class AuthService {
   userRepository: UserRepository;
+  settingsRepository: SettingsRepository;
 
   constructor() {
     this.userRepository = new UserRepository();
+    this.settingsRepository = new SettingsRepository();
   }
 
   async attemptLogin(email: string, password: string) {
@@ -31,10 +33,11 @@ export default class AuthService {
       throw new ValidationError('Credentials do not match!');
     }
 
-    const user = _.omit(userWithSameEmail[0], ['password']);
-    const accessToken = await JwtLibrary.createNewToken(user);
-
-    return { user, accessToken };
+    return _.omit(userWithSameEmail[0], [
+      'password',
+      'createdAt',
+      'emailVerifiedAt',
+    ]);
   }
 
   async register(data: AuthRegisterBody) {
@@ -44,20 +47,24 @@ export default class AuthService {
     }
 
     const userWithSameEmail = await this.userRepository.getByEmail(data.email);
-    if (userWithSameEmail) {
+    if (userWithSameEmail.length > 0) {
       throw new ValidationError('Email is already taken!');
     }
 
     const { retypePassword, ...formData } = data;
     formData.password = await HashLibrary.hash(formData.password);
 
-    const response = await this.userRepository.create(formData);
-    if (response.length < 0) {
+    const userInsertResponse = await this.userRepository.create(formData);
+    if (userInsertResponse.length < 0) {
       throw new DatabaseError('Create user failed!');
     }
 
-    // get new user data
-    const newUser = await this.userRepository.getById(response[0].insertedId);
-    return _.omit(newUser, ['password']);
+    // create settings record
+    const newUser = userInsertResponse[0];
+    const settingsInsertResponse =
+      await this.settingsRepository.createDefaultSettingForUser(newUser.id);
+    return _.omit({ ...newUser, settings: settingsInsertResponse[0] }, [
+      'password',
+    ]);
   }
 }

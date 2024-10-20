@@ -54,8 +54,8 @@ export default class UserRepository {
       .values({
         ...data,
         id: uuidv4(),
-        createdAt: dayjs.utc().toDate(),
+        createdAt: dayjs().utc().toDate(),
       })
-      .returning({ insertedId: usersSchema.id });
+      .returning();
   }
 }

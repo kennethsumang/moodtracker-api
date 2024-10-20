@@ -7,6 +7,8 @@ import {
   integer,
   uniqueIndex,
   AnyPgColumn,
+  serial,
+  numeric,
 } from 'drizzle-orm/pg-core';
 
 export const mySchema = pgSchema('my_schema');
@@ -39,13 +41,29 @@ export const moodsSchema = mySchema.table('moods', {
   createdAt: timestamp('createdAt').notNull(),
 });
 
-export const usersRelations = relations(usersSchema, ({ many }) => ({
+export const settingsSchema = mySchema.table('settings', {
+  id: serial('id').primaryKey(),
+  userId: text('userId').notNull(),
+  timezone: text('timezone').notNull().default('Asia/Manila'),
+  createdAt: timestamp('createdAt').notNull(),
+  updatedAt: timestamp('updatedAt'),
+});
+
+export const usersRelations = relations(usersSchema, ({ many, one }) => ({
   moods: many(moodsSchema),
+  settings: one(settingsSchema),
 }));
 
 export const moodsRelations = relations(moodsSchema, ({ one }) => ({
   user: one(usersSchema, {
     fields: [moodsSchema.userId],
+    references: [usersSchema.id],
+  }),
+}));
+
+export const settingsRelations = relations(settingsSchema, ({ one }) => ({
+  user: one(usersSchema, {
+    fields: [settingsSchema.userId],
     references: [usersSchema.id],
   }),
 }));

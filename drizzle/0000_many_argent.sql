@@ -8,6 +8,14 @@ CREATE TABLE IF NOT EXISTS "my_schema"."moods" (
 	"createdAt" timestamp NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "my_schema"."settings" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"timezone" text DEFAULT 'Asia/Manila' NOT NULL,
+	"createdAt" timestamp NOT NULL,
+	"updatedAt" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "my_schema"."users" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
