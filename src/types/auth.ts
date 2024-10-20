@@ -9,3 +9,14 @@ export interface AuthRegisterBody {
   password: string;
   retypePassword: string;
 }
+
+export interface JwtData {
+  id: string;
+  email: string;
+  name: string;
+  settings: {
+    id: string;
+    userId: string;
+    timezone: string;
+  };
+}

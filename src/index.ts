@@ -2,9 +2,14 @@ import { Elysia, t } from 'elysia';
 import { swagger } from '@elysiajs/swagger';
 import { jwt } from '@elysiajs/jwt';
 import AuthService from './services/auth.service';
-import { AuthLoginBody, AuthRegisterBody } from './types/auth';
+import { AuthLoginBody, AuthRegisterBody, JwtData } from './types/auth';
 import config from './config/jwt.config';
 import HttpError from './exceptions/http.error';
+import MoodService, {
+  CreateMoodData,
+  GetMoodParams,
+} from './services/mood.service';
+import { getJwtToken } from './libraries/token.library';
 
 const app = new Elysia()
   .use(swagger())
@@ -55,6 +60,46 @@ const app = new Elysia()
             summary: 'Registers a user',
             tags: ['authentication'],
           },
+        }
+      )
+  )
+  .group('/moods', (app) =>
+    app
+      .get(
+        '/',
+        async ({ params, jwt, headers }) => {
+          const paramData = params as Partial<GetMoodParams>;
+          const jwtToken = getJwtToken(headers.Authorization);
+          const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
+
+          const moods = await new MoodService().getMoods(user.id, paramData);
+          return { moods };
+        },
+        {
+          params: t.Object({
+            skip: t.Optional(t.Number()),
+            take: t.Optional(t.Number()),
+          }),
+        }
+      )
+      .post(
+        '/',
+        async ({ body, jwt, headers }) => {
+          const bodyData = body as CreateMoodData;
+          const jwtToken = getJwtToken(headers.Authorization);
+          const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
+
+          const moods = await new MoodService().createMoodRecord(
+            user.id,
+            bodyData
+          );
+          return { moods };
+        },
+        {
+          body: t.Object({
+            level: t.Number(),
+            content: t.String(),
+          }),
         }
       )
   )
