@@ -1,5 +1,4 @@
-import { relations, sql, SQL } from 'drizzle-orm';
-import { datetime } from 'drizzle-orm/mysql-core';
+import { sql, SQL } from 'drizzle-orm';
 import {
   text,
   pgSchema,
@@ -36,7 +35,9 @@ export function lower(email: AnyPgColumn): SQL {
 
 export const moodsSchema = mySchema.table('moods', {
   id: uuid('id').primaryKey(),
-  userId: text('userId').notNull(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => usersSchema.id),
   datetime: timestamp('datetime').notNull(),
   level: integer('level').default(3),
   content: text('content').default(''),
@@ -45,27 +46,10 @@ export const moodsSchema = mySchema.table('moods', {
 
 export const settingsSchema = mySchema.table('settings', {
   id: serial('id').primaryKey(),
-  userId: text('userId').notNull(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => usersSchema.id),
   timezone: text('timezone').notNull().default('Asia/Manila'),
   createdAt: timestamp('createdAt').notNull(),
   updatedAt: timestamp('updatedAt'),
 });
-
-export const usersRelations = relations(usersSchema, ({ many, one }) => ({
-  moods: many(moodsSchema),
-  settings: one(settingsSchema),
-}));
-
-export const moodsRelations = relations(moodsSchema, ({ one }) => ({
-  user: one(usersSchema, {
-    fields: [moodsSchema.userId],
-    references: [usersSchema.id],
-  }),
-}));
-
-export const settingsRelations = relations(settingsSchema, ({ one }) => ({
-  user: one(usersSchema, {
-    fields: [settingsSchema.userId],
-    references: [usersSchema.id],
-  }),
-}));
