@@ -86,7 +86,6 @@ const app = new Elysia()
         '/',
         async ({ body, jwt, headers }) => {
           const bodyData = body as CreateMoodData;
-          console.log(headers);
           const jwtToken = getJwtToken(headers.authorization);
           const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
 
@@ -100,6 +99,50 @@ const app = new Elysia()
           body: t.Object({
             level: t.Number(),
             content: t.String(),
+          }),
+        }
+      )
+      .put(
+        '/:id',
+        async ({ body, jwt, headers, params }) => {
+          const bodyData = body as CreateMoodData;
+          const jwtToken = getJwtToken(headers.authorization);
+          const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
+          const moodId = params.id;
+
+          const moods = await new MoodService().updateMoodRecord(
+            user.id,
+            moodId,
+            bodyData
+          );
+          return { moods };
+        },
+        {
+          body: t.Object({
+            level: t.Number(),
+            content: t.String(),
+          }),
+          params: t.Object({
+            id: t.String(),
+          }),
+        }
+      )
+      .delete(
+        '/:id',
+        async ({ jwt, headers, params }) => {
+          const jwtToken = getJwtToken(headers.authorization);
+          const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
+          const moodId = params.id;
+
+          const deletedId = await new MoodService().deleteMoodRecord(
+            user.id,
+            moodId
+          );
+          return { result: { deleted: deletedId } };
+        },
+        {
+          params: t.Object({
+            id: t.String(),
           }),
         }
       )
