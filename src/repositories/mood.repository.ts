@@ -25,10 +25,13 @@ export default class MoodRepository {
   }
 
   async createMood(data: CreateMoodFormData) {
-    return db.insert(moodsSchema).values({
-      ...data,
-      id: uuidv4(),
-      createdAt: dayjs().utc().toDate(),
-    });
+    return db
+      .insert(moodsSchema)
+      .values({
+        ...data,
+        id: uuidv4(),
+        createdAt: dayjs().utc().toDate(),
+      })
+      .returning();
   }
 }

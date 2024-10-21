@@ -67,18 +67,18 @@ const app = new Elysia()
     app
       .get(
         '/',
-        async ({ params, jwt, headers }) => {
-          const paramData = params as Partial<GetMoodParams>;
-          const jwtToken = getJwtToken(headers.Authorization);
+        async ({ query, jwt, headers }) => {
+          const queryData = query as Partial<GetMoodParams>;
+          const jwtToken = getJwtToken(headers.authorization);
           const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
 
-          const moods = await new MoodService().getMoods(user.id, paramData);
+          const moods = await new MoodService().getMoods(user.id, queryData);
           return { moods };
         },
         {
-          params: t.Object({
-            skip: t.Optional(t.Number()),
-            take: t.Optional(t.Number()),
+          query: t.Object({
+            skip: t.Optional(t.Numeric()),
+            take: t.Optional(t.Numeric()),
           }),
         }
       )
@@ -86,7 +86,8 @@ const app = new Elysia()
         '/',
         async ({ body, jwt, headers }) => {
           const bodyData = body as CreateMoodData;
-          const jwtToken = getJwtToken(headers.Authorization);
+          console.log(headers);
+          const jwtToken = getJwtToken(headers.authorization);
           const user = (await jwt.verify(jwtToken)) as unknown as JwtData;
 
           const moods = await new MoodService().createMoodRecord(
