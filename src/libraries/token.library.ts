@@ -5,7 +5,7 @@ import UnauthorizedError from '../exceptions/unauthorized.error';
  * @param   {unknown} bearerToken
  * @returns {string}
  */
-const getJwtToken = (bearerToken: unknown) => {
+const getJwtToken = (bearerToken: unknown): string => {
   if (typeof bearerToken !== 'string') {
     throw new UnauthorizedError('Invalid token in header.');
   }
