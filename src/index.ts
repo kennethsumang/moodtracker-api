@@ -80,6 +80,10 @@ const app = new Elysia()
             skip: t.Optional(t.Numeric()),
             take: t.Optional(t.Numeric()),
           }),
+          detail: {
+            summary: 'Gets the mood records of user.',
+            tags: ['mood'],
+          },
         }
       )
       .post(
@@ -101,6 +105,10 @@ const app = new Elysia()
             level: t.Number(),
             content: t.String(),
           }),
+          detail: {
+            summary: 'Creates a new mood record for a user.',
+            tags: ['mood'],
+          },
         }
       )
       .put(
@@ -127,6 +135,10 @@ const app = new Elysia()
           params: t.Object({
             id: t.String(),
           }),
+          detail: {
+            summary: 'Updates an existing mood record of a user.',
+            tags: ['mood'],
+          },
         }
       )
       .delete(
@@ -146,6 +158,10 @@ const app = new Elysia()
           params: t.Object({
             id: t.String(),
           }),
+          detail: {
+            summary: 'Deletes an existing mood record of a user.',
+            tags: ['mood'],
+          },
         }
       )
   )
