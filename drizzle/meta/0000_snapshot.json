@@ -1,5 +1,5 @@
 {
-  "id": "de7f7a37-0cf7-46a9-8e3a-ef91bd913d15",
+  "id": "c965c8c6-9e06-44e2-baf5-ce4f4b8ae845",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -17,6 +17,12 @@
         "userId": {
           "name": "userId",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datetime": {
+          "name": "datetime",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },

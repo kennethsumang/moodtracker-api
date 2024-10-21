@@ -7,6 +7,7 @@ export interface GetMoodParams {
 }
 
 export interface CreateMoodData {
+  datetime: Date;
   level: number;
   content: string;
 }

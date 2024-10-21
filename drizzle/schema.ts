@@ -1,4 +1,5 @@
 import { relations, sql, SQL } from 'drizzle-orm';
+import { datetime } from 'drizzle-orm/mysql-core';
 import {
   text,
   pgSchema,
@@ -36,6 +37,7 @@ export function lower(email: AnyPgColumn): SQL {
 export const moodsSchema = mySchema.table('moods', {
   id: uuid('id').primaryKey(),
   userId: text('userId').notNull(),
+  datetime: timestamp('datetime').notNull(),
   level: integer('level').default(3),
   content: text('content').default(''),
   createdAt: timestamp('createdAt').notNull(),

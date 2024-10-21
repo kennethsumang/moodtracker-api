@@ -97,6 +97,7 @@ const app = new Elysia()
         },
         {
           body: t.Object({
+            datetime: t.Date(),
             level: t.Number(),
             content: t.String(),
           }),
@@ -119,6 +120,7 @@ const app = new Elysia()
         },
         {
           body: t.Object({
+            datetime: t.Date(),
             level: t.Number(),
             content: t.String(),
           }),

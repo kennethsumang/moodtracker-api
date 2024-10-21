@@ -3,6 +3,7 @@ CREATE SCHEMA "my_schema";
 CREATE TABLE IF NOT EXISTS "my_schema"."moods" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
+	"datetime" timestamp NOT NULL,
 	"level" integer DEFAULT 3,
 	"content" text DEFAULT '',
 	"createdAt" timestamp NOT NULL
