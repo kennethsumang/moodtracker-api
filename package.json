@@ -1,0 +1,38 @@
+{
+  "name": "moodtracker-api",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "npx tsc",
+    "start": "node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.46.1",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "inversify": "^6.1.4",
+    "lodash": "^4.17.21",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.0",
+    "@types/lodash": "^4.17.13",
+    "@types/node": "^22.9.3",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "mocha": "^10.8.2",
+    "prettier": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
