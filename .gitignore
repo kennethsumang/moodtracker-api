@@ -5,3 +5,4 @@ rest-files
 dist
 *.db
 *.db-journal
+*.pem

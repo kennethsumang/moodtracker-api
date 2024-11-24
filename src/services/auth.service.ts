@@ -3,8 +3,10 @@ import RegisterDto from '../dtos/auth/register.dto';
 import UserRepository from '../repositories/user.repository';
 import { inject, injectable } from 'inversify';
 import BadRequestError from '../exceptions/badRequest.error';
-import { hashSync } from 'bcrypt';
+import { hashSync, compareSync } from 'bcrypt';
 import _ from 'lodash';
+import UnauthorizedError from '../exceptions/unauthorized.error';
+import { signJwt } from '../utils/jwt.util';
 
 /**
  * AuthService class
@@ -14,7 +16,22 @@ export default class AuthService {
   constructor(@inject(UserRepository) private userRepository: UserRepository) {}
 
   async login(credentials: LoginDto) {
-    return {};
+    const usersWithSameEmail = await this.userRepository.getUserByEmail(credentials.email);
+    if (!usersWithSameEmail) {
+      throw new UnauthorizedError('Authentication failed');
+    }
+
+    const isCorrectPassword = compareSync(credentials.password, usersWithSameEmail[0].password);
+    if (!isCorrectPassword) {
+      throw new UnauthorizedError('Authentication failed');
+    }
+
+    const tokenData = _.pick(usersWithSameEmail[0], ['id', 'email', 'name']);
+    const token = await signJwt(tokenData);
+    return {
+      user: tokenData,
+      accessToken: token,
+    };
   }
 
   async register(data: RegisterDto) {
