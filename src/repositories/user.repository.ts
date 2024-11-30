@@ -21,6 +21,12 @@ export default class UserRepository {
       });
   }
 
+  async getUserById(id: string): Promise<User|null> {
+    return this.prisma
+      .user
+      .findFirst({ where: { id } })
+  }
+
   async createUser(form: RegisterDto): Promise<User> {
     return this.prisma
       .user

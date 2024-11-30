@@ -21,6 +21,7 @@ const errorMiddleware = (
       code: statusCode,
       message: message,
       timestamp: dayjs.utc().toISOString(),
+      stackTrace: err.stack,
     }
   });
 };
