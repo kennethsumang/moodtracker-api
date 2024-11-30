@@ -23,7 +23,6 @@ const tokenMiddleware = async (
 
   const token = bearerToken[1];
   req.user = await verifyJwt(token);
-  console.log(req.user);
   next();
 };
 
